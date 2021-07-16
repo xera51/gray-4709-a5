@@ -93,8 +93,8 @@ public class Item {
     public String toString() {
         return "Item{" +
                 "name=" + this.getName() +
-                "serial_number=" + this.getSerialNumber() +
-                "value=" + this.getValueAsDouble();
+                ",serial_number=" + this.getSerialNumber() +
+                ",value=" + this.getValueAsDouble() + "}";
     }
 
     private boolean validate(String name, String serialNumber, BigDecimal value) {
