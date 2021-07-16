@@ -1,0 +1,18 @@
+@startuml
+
+package ucf.assignments {
+
+    class InventoryManager {
+
+    }
+}
+
+InventoryManager -- InventoryManagerController
+InventoryManagerController *-- InventoryManagerModel
+InventoryManagerModel *-- InventoryManagerDAO
+InventoryManagerModel *-- Item
+InventoryManagerDAO *-- JSONSerializer
+InventoryManagerDAO *-- TSVParser
+InventoryManagerDAO *-- HTMLParser
+
+@enduml
