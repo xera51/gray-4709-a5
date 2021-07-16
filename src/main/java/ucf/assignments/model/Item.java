@@ -1,9 +1,11 @@
 package ucf.assignments.model;
 
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.util.Callback;
 
 import java.math.BigDecimal;
 
@@ -115,4 +117,13 @@ public class Item {
             return true;
         }
     }
+
+    public static Callback<Item, Observable[]> extractor() {
+        return (Item item) -> new Observable[]{
+                item.nameProperty(),
+                item.serialNumberProperty(),
+                item.valueProperty()
+        };
+    }
+
 }
