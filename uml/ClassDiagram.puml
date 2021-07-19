@@ -5,14 +5,68 @@ package ucf.assignments {
     class InventoryManager {
 
     }
+
+    interface Serializer {
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
+    }
+
+    class InventoryJSONSerializer {
+
+    }
+
+    class InventoryHTMLSerializer {
+
+    }
+
+    class InventoryTSVSerializer {
+
+    }
+
+    class InventoryManagerModel {
+
+    }
+
+    class Item {
+
+    }
+
+    class InventoryManagerController {
+
+    }
+
+    interface InventoryDAO {
+        + create(): void
+        + getItems(): Collection<? extends Item>
+        + saveItems(Collection<? extends Item> items): void
+        + delete(): void
+    }
+
+    class InventoryFileDAO {
+        - path : Path
+        - serializer : Serializer
+
+        + InventoryDAO(Path path): InventoryDAO
+
+        - determineFileExtension(Path path): <? extends Serializer>
+    }
+
+    class InventoryDatabaseTableDAO {
+
+    }
 }
 
 InventoryManager -- InventoryManagerController
 InventoryManagerController *-- InventoryManagerModel
-InventoryManagerModel *-- InventoryManagerDAO
-InventoryManagerModel *-- Item
-InventoryManagerDAO *-- JSONSerializer
-InventoryManagerDAO *-- TSVParser
-InventoryManagerDAO *-- HTMLParser
+InventoryManagerModel *-- InventoryDAO
+Item -* InventoryManagerModel
+InventoryFileDAO *- Serializer
+Serializer <|.. InventoryJSONSerializer
+Serializer <|.. InventoryHTMLSerializer
+Serializer <|.. InventoryTSVSerializer
+InventoryDAO <|.. InventoryFileDAO
+InventoryDAO <|. InventoryDatabaseTableDAO
+Item .. InventoryDAO
+
 
 @enduml
