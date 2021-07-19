@@ -5,6 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+// TODO copyright comments
+// TODO switch TextFields to LimitedTextFields when done with SceneBuilder
+// TODO Clean up classes to follow SRP (time permitting)
+// TODO callback to get stage
 public class InventoryManager extends Application {
     public static void main(String[] args) {
         launch(args);

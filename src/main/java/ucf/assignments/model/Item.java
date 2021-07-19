@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.model;
 
 import javafx.beans.Observable;
@@ -9,6 +14,7 @@ import javafx.util.Callback;
 
 import java.math.BigDecimal;
 
+// TODO allow null for name and potentially other fields
 public class Item {
 
     StringProperty name = new SimpleStringProperty();
@@ -93,7 +99,7 @@ public class Item {
     public String toString() {
         return "Item{" +
                 "name=" + this.getName() +
-                ",serial_number=" + this.getSerialNumber() +
+                ",serialNumber=" + this.getSerialNumber() +
                 ",value=" + this.getValueAsDouble() + "}";
     }
 

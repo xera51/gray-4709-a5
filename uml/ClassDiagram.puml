@@ -68,5 +68,4 @@ InventoryDAO <|.. InventoryFileDAO
 InventoryDAO <|. InventoryDatabaseTableDAO
 Item .. InventoryDAO
 
-
 @enduml

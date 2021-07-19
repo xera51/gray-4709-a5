@@ -9,6 +9,9 @@ public class LimitedTextField extends TextField {
     IntegerProperty beginIndex = new SimpleIntegerProperty(this, "beginIndex");
     IntegerProperty endIndex = new SimpleIntegerProperty(this, "endIndex");
 
+    public LimitedTextField() {
+        this(32);
+    }
 
     public LimitedTextField(int endIndex) {
         this(0, endIndex, "");
