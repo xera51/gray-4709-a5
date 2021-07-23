@@ -13,13 +13,25 @@ import java.util.stream.Collectors;
 
 // TODO potentially make key change if sn changed (currently controller is doing it - should not be)
 public class InventoryManagerModel {
+    /***************************************************************************
+     *                                                                         *
+     * Fields                                                                  *
+     *                                                                         *
+     **************************************************************************/
+
     private final ObservableMap<String, Item> itemMap = FXCollections.observableHashMap();
     private final ObservableList<Item> itemList = FXCollections.observableArrayList(Item.extractor());
     private final FilteredList<Item> filteredItemList = new FilteredList<>(itemList);
     private final SortedList<Item> sortedItemList = new SortedList<>(filteredItemList);
 
-    private InventoryDAO dao;
+    private InventoryDAO dataAccessObject;
 
+
+    /***************************************************************************
+     *                                                                         *
+     * Constructor                                                             *
+     *                                                                         *
+     **************************************************************************/
     public InventoryManagerModel() {
         itemMap.addListener((MapChangeListener<String, Item>) change -> {
             if(change.wasAdded()) {
@@ -74,36 +86,36 @@ public class InventoryManagerModel {
     }
 
     public void bindFile(Path path) {
-        dao = new InventoryFileDAO(path);
+        dataAccessObject = new InventoryFileDAO(path);
     }
 
     public void unbind() {
-        dao = null;
+        dataAccessObject = null;
     }
 
     public boolean isBound() {
-        return dao != null;
+        return dataAccessObject != null;
     }
 
     public void save() {
-        dao.saveItems(this.itemList);
+        dataAccessObject.saveItems(this.itemList);
     }
 
     public void load() {
         itemMap.clear();
         itemMap.putAll(
-            dao.getItems().stream().collect(
+            dataAccessObject.getItems().stream().collect(
                 Collectors.toMap(Item::getSerialNumber, Function.identity()))
         );
     }
 
     public void close() {
         itemMap.clear();
-        dao = null;
+        dataAccessObject = null;
     }
 
     public void delete() {
-        dao.delete();
+        dataAccessObject.delete();
         close();
     }
 }

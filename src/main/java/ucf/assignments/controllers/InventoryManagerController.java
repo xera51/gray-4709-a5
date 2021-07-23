@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import net.xera51.javafx.control.Notification;
+import org.w3c.dom.Text;
 import ucf.assignments.controls.LimitedTextField;
 import ucf.assignments.factories.DialogFactories;
 import ucf.assignments.factories.ValidatingTableCell;
@@ -25,13 +26,16 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.*;
 
 public class InventoryManagerController {
 
     InventoryManagerModel model = new InventoryManagerModel();
     FileChooser fileChooser = new FileChooser();
+    File lastUsedDirectory;
     Stage stage;
+
+    List<TextField> addFields = new ArrayList<>();
 
     // TODO update on edit
     boolean saved = true;
@@ -80,9 +84,11 @@ public class InventoryManagerController {
 
     public void initialize() {
         // TODO consider blending extension filters into one
+        // TODO make sure /inventories/ directory exists, create if not
+        // TODO use last successful directory
         // FileChooser set-up
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"), new FileChooser.ExtensionFilter("HTML", "*.html"), new FileChooser.ExtensionFilter("TSV", "*.txt"));
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/inventories/"));
+        fileChooser.setInitialDirectory(getDefaultDirectory());
 
         // TODO add placeholder for tableview
         // Table set-up
@@ -169,6 +175,9 @@ public class InventoryManagerController {
             editImageView.setImage(new Image(searchIcon));
         }
 
+        // Add Fields setup
+        Collections.addAll(addFields, nameField, serialNumberField, valueField);
+
         // Stage setup
         stage.setOnCloseRequest(event -> {
             onExitRequest();
@@ -181,6 +190,12 @@ public class InventoryManagerController {
         // help
         event.consume();
     }
+
+    /***************************************************************************
+     *                                                                         *
+     * Event Handlers                                                          *
+     *                                                                         *
+     **************************************************************************/
 
     @FXML
     void addItem(ActionEvent event) {
@@ -242,31 +257,23 @@ public class InventoryManagerController {
 
     @FXML
     void newInv(ActionEvent event) {
-        if(!saved) {
-            saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
-        }
+        confirmIfNotSaved();
         if (saved) {
             model.close();
-            nameField.clear();
-            serialNumberField.clear();
-            valueField.clear();
+            clearAddFields();
         }
         event.consume();
     }
 
     @FXML
     void openInv(ActionEvent event) {
-        if (!saved) {
-            saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
-        }
+        confirmIfNotSaved();
         if (saved) {
-            File file = fileChooser.showOpenDialog(itemTable.getScene().getWindow());
+            File file = showFileChooser();
             if (file != null) {
                 model.bindFile(file.toPath());
                 model.load();
-                nameField.clear();
-                serialNumberField.clear();
-                valueField.clear();
+                clearAddFields();
             }
         }
         event.consume();
@@ -285,7 +292,7 @@ public class InventoryManagerController {
 
     @FXML
     void saveAsInv(ActionEvent event) {
-        File file = fileChooser.showSaveDialog(itemTable.getScene().getWindow());
+        File file = showFileChooser();
         if(file != null) {
             model.bindFile(file.toPath());
             model.save();
@@ -309,7 +316,7 @@ public class InventoryManagerController {
         event.consume();
     }
 
-    void onExitRequest() {
+    private void onExitRequest() {
         if(!saved) {
             saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
         }
@@ -318,7 +325,50 @@ public class InventoryManagerController {
         }
     }
 
+    /***************************************************************************
+     *                                                                         *
+     * Private Implementation                                                  *
+     *                                                                         *
+     **************************************************************************/
+
+
     private void showNotification(Node node, String message) {
         new Notification(message).show(node, Side.TOP, 5, 0);
     }
+
+    private void setDirectory(FileChooser fileChooser) {
+        if (!fileChooser.getInitialDirectory().exists()) {
+            fileChooser.setInitialDirectory(getDefaultDirectory());
+        }
+    }
+
+    private File getDefaultDirectory() {
+        File inventoryDirectory = new File(System.getProperty("user.dir") +
+                File.separator + "inventories" + File.separator);
+        if (!inventoryDirectory.exists()) {
+            inventoryDirectory.mkdir();
+        }
+        return inventoryDirectory;
+    }
+
+    private void clearAddFields() {
+        for(TextField field : addFields) {
+            field.clear();
+        }
+    }
+
+    private void confirmIfNotSaved() {
+        if(!saved) {
+            saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
+        }
+    }
+
+    private File showFileChooser() {
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            fileChooser.setInitialDirectory(file.getParentFile());
+        }
+        return file;
+    }
+
 }
