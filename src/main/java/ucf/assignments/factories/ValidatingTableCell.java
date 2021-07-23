@@ -1,26 +1,35 @@
 package ucf.assignments.factories;
 
+import javafx.scene.control.Cell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
-// TODO allow to deselect cell when another row (and potentially Node) is selected
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 public class ValidatingTableCell<S, T> extends TableCell<S, T> {
 
-    private final Callback<Void, ? extends TextField> textFieldFactory;
-    private final Callback<T, Boolean> validator;
+    private final Supplier<? extends TextField> textFieldFactory;
+    private final BiPredicate<T, Cell<T>> validator;
     private final String errorMessage;
     private final StringConverter<T> converter;
     private TextField textField;
 
-    public ValidatingTableCell(Callback<Void, ? extends TextField> textFieldFactory,
-                               Callback<T, Boolean> validator,
+    //TODO validator cant be null
+    public ValidatingTableCell(Supplier<? extends TextField> textFieldFactory,
+                               BiPredicate<T, Cell<T>> validator,
                                StringConverter<T> converter,
                                String errorMessage) {
         if (textFieldFactory == null) {
-            textFieldFactory = param -> new TextField();
+            textFieldFactory = TextField::new;
+        }
+        if (validator == null) {
+            throw new NullPointerException("validator can't be null");
+        }
+        if (converter == null) {
+            throw new NullPointerException("converter can't be null");
         }
         this.textFieldFactory = textFieldFactory;
         this.validator = validator;
@@ -57,7 +66,7 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
 
         if (isEditing()) {
             if (textField == null) {
-                createTextInputControl();
+                textField = EditableCellUtils.createValidatedTextField(this, converter, textFieldFactory, validator, errorMessage);
             }
 
             textField.setText(converter.toString(this.getItem()));
@@ -73,31 +82,5 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
         super.cancelEdit();
         this.setText(converter.toString(this.getItem()));
         this.setGraphic(null);
-    }
-
-    private void createTextInputControl() {
-        textField = textFieldFactory.call(null);
-        textField.setText(converter.toString(this.getItem()));
-
-        textField.setOnAction(event -> {
-            if (validator != null){
-                if (validator.call(converter.fromString(textField.getText()))) {
-                    this.commitEdit(converter.fromString(textField.getText()));
-                } else {
-                    // TODO alert user when mistake
-                    startEdit();
-                }
-            } else {
-                this.commitEdit(converter.fromString(textField.getText()));
-            }
-
-            event.consume();
-        });
-        textField.setOnKeyReleased(t -> {
-            if (t.getCode() == KeyCode.ESCAPE) {
-                this.cancelEdit();
-                t.consume();
-            }
-        });
     }
 }

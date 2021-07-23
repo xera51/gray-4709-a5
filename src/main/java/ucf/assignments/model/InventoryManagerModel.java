@@ -7,6 +7,7 @@ import javafx.collections.ObservableMap;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 
+import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,48 +34,55 @@ public class InventoryManagerModel {
         return sortedItemList;
     }
 
-    public boolean add(Item item) {
-        return itemMap.putIfAbsent(item.getSerialNumber(), item) == null;
-    }
-
-    public boolean edit(Item oldItem, Item newItem) {
-        if(oldItem.getSerialNumber().equals(newItem.getSerialNumber())) {
-            itemMap.replace(newItem.getSerialNumber(), newItem);
-            return true;
-        } else
-            if (this.add(newItem)) {
-                itemMap.remove(oldItem.getSerialNumber());
-                return true;
-            } else {
-                return false;
+    public void add(Item item) {
+        // We must remove an item if the key was previously taken,
+        // so the ObservableList is alerted
+        if (containsSerialNumber(item.getSerialNumber())) {
+            itemMap.remove(item.getSerialNumber());
         }
+        itemMap.put(item.getSerialNumber(), item);
     }
 
-    // TODO return boolean indicating success/failure
     public void remove(Item item) {
         itemMap.remove(item.getSerialNumber());
+    }
+
+    public void edit(Item oldItem, Item newItem) {
+        if(oldItem.getSerialNumber().equals(newItem.getSerialNumber())) {
+            itemMap.replace(newItem.getSerialNumber(), newItem);
+        } else {
+            if (containsSerialNumber(newItem.getSerialNumber())) {
+                itemMap.remove(newItem.getSerialNumber());
+            }
+            itemMap.put(newItem.getSerialNumber(), newItem);
+            itemMap.remove(oldItem.getSerialNumber());
+        }
     }
 
     public void setFilter(String name, String serialNumber) {
         filteredItemList.setPredicate(item ->
                 item.getName().toLowerCase().contains(name.toLowerCase())
-                        && item.getSerialNumber().toLowerCase().contains(serialNumber.toLowerCase()));
-    }
-
-    public ObservableMap<String, Item> getMap() {
-        return itemMap;
+                        && item.getSerialNumber().contains(serialNumber));
     }
 
     public boolean containsSerialNumber(String serialNumber) {
         return itemMap.containsKey(serialNumber);
     }
 
-    public void setDao(InventoryDAO dao) {
-        this.dao = dao;
+    public Item getItemBySerialNumber(String serialNumber) {
+        return itemMap.get(serialNumber);
     }
 
-    public InventoryDAO getDao() {
-        return dao;
+    public void bindFile(Path path) {
+        dao = new InventoryFileDAO(path);
+    }
+
+    public void unbind() {
+        dao = null;
+    }
+
+    public boolean isBound() {
+        return dao != null;
     }
 
     public void save() {
@@ -96,6 +104,6 @@ public class InventoryManagerModel {
 
     public void delete() {
         dao.delete();
-        dao = null;
+        close();
     }
 }

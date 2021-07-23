@@ -17,10 +17,6 @@ import java.math.BigDecimal;
 // TODO allow null for name and potentially other fields
 public class Item {
 
-    StringProperty name = new SimpleStringProperty();
-    StringProperty serialNumber = new SimpleStringProperty();
-    ObjectProperty<BigDecimal> value = new SimpleObjectProperty<>();
-
     public Item(String name, String serialNumber, double value) {
         this(name, serialNumber, BigDecimal.valueOf(value));
     }
@@ -33,49 +29,21 @@ public class Item {
         }
     }
 
-    public String getName() {
-        return name.get();
-    }
+    // TODO no validation. should validation be moved out of class? subclass?
+    public final StringProperty nameProperty() { return name; }
+    public final void setName(String value) { nameProperty().setValue(value); }
+    public final String getName() { return name.getValue() == null ? "" : name.getValue(); }
+    private final StringProperty name = new SimpleStringProperty(this, "name", "");
 
-    public void setName(String name) {
-        this.name.set(name);
-    }
+    public final StringProperty serialNumberProperty() { return serialNumber; }
+    public final void setSerialNumber(String value) { serialNumber.setValue(value); }
+    public final String getSerialNumber() { return serialNumber.getValue() == null ? "" : serialNumber.getValue(); }
+    private final StringProperty serialNumber = new SimpleStringProperty(this, "serialNumber", "");
 
-    public StringProperty nameProperty() {
-        return name;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber.get();
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber.set(serialNumber);
-    }
-
-    public StringProperty serialNumberProperty() {
-        return serialNumber;
-    }
-
-    public BigDecimal getValue() {
-        return value.get();
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value.set(value);
-    }
-
-    public double getValueAsDouble() {
-        return value.get().doubleValue();
-    }
-
-    public ObjectProperty<BigDecimal> valueProperty() {
-        return value;
-    }
-
-    public void setValueFromDouble(double value) {
-        this.value.set(BigDecimal.valueOf(value));
-    }
+    public final ObjectProperty<BigDecimal> valueProperty() { return value; }
+    public final void setValue(BigDecimal value) { this.value.setValue(value); }
+    public final BigDecimal getValue() { return value.getValue(); }
+    private final ObjectProperty<BigDecimal> value = new SimpleObjectProperty<>();
 
     @Override
     public int hashCode() {
@@ -98,9 +66,9 @@ public class Item {
     @Override
     public String toString() {
         return "Item{" +
-                "name=" + this.getName() +
-                ",serialNumber=" + this.getSerialNumber() +
-                ",value=" + this.getValueAsDouble() + "}";
+                "name=" + getName() +
+                ",serialNumber=" + getSerialNumber() +
+                ",value=" + getValue() + "}";
     }
 
     private boolean validate(String name, String serialNumber, BigDecimal value) {

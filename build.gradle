@@ -26,4 +26,9 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+run {
+    jvmArgs = ['--add-exports=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED',
+               '--add-exports=javafx.graphics/com.sun.javafx.util=ALL-UNNAMED']
+}
+
 mainClassName = 'ucf.assignments.InventoryManager'
