@@ -12,31 +12,31 @@ import javafx.scene.control.Skin;
 
 public class NotificationSkin implements Skin<Notification> {
 
-    private Label notifLabel;
+    private Label notificationLabel;
 
     private Notification notification;
 
     public NotificationSkin(Notification n) {
         this.notification = n;
-        notifLabel = new Label();
-        notifLabel.contentDisplayProperty().bind(n.contentDisplayProperty());
-        notifLabel.fontProperty().bind(n.fontProperty());
-        notifLabel.graphicProperty().bind(n.graphicProperty());
-        notifLabel.graphicTextGapProperty().bind(n.graphicTextGapProperty());
-        notifLabel.textAlignmentProperty().bind(n.textAlignmentProperty());
-        notifLabel.textOverrunProperty().bind(n.textOverrunProperty());
-        notifLabel.textProperty().bind(n.textProperty());
-        notifLabel.wrapTextProperty().bind(n.wrapTextProperty());
-        notifLabel.minWidthProperty().bind(n.minWidthProperty());
-        notifLabel.prefWidthProperty().bind(n.prefWidthProperty());
-        notifLabel.maxWidthProperty().bind(n.maxWidthProperty());
-        notifLabel.minHeightProperty().bind(n.minHeightProperty());
-        notifLabel.prefHeightProperty().bind(n.prefHeightProperty());
-        notifLabel.maxHeightProperty().bind(n.maxHeightProperty());
+        notificationLabel = new Label();
+        notificationLabel.contentDisplayProperty().bind(n.contentDisplayProperty());
+        notificationLabel.fontProperty().bind(n.fontProperty());
+        notificationLabel.graphicProperty().bind(n.graphicProperty());
+        notificationLabel.graphicTextGapProperty().bind(n.graphicTextGapProperty());
+        notificationLabel.textAlignmentProperty().bind(n.textAlignmentProperty());
+        notificationLabel.textOverrunProperty().bind(n.textOverrunProperty());
+        notificationLabel.textProperty().bind(n.textProperty());
+        notificationLabel.wrapTextProperty().bind(n.wrapTextProperty());
+        notificationLabel.minWidthProperty().bind(n.minWidthProperty());
+        notificationLabel.prefWidthProperty().bind(n.prefWidthProperty());
+        notificationLabel.maxWidthProperty().bind(n.maxWidthProperty());
+        notificationLabel.minHeightProperty().bind(n.minHeightProperty());
+        notificationLabel.prefHeightProperty().bind(n.prefHeightProperty());
+        notificationLabel.maxHeightProperty().bind(n.maxHeightProperty());
 
-        notifLabel.getStyleClass().setAll(n.getStyleClass());
-        notifLabel.setStyle(n.getStyle());
-        notifLabel.setId(n.getId());
+        notificationLabel.getStyleClass().setAll(n.getStyleClass());
+        notificationLabel.setStyle(n.getStyle());
+        notificationLabel.setId(n.getId());
     }
 
 
@@ -47,12 +47,12 @@ public class NotificationSkin implements Skin<Notification> {
 
     @Override
     public Node getNode() {
-        return notifLabel;
+        return notificationLabel;
     }
 
     @Override
     public void dispose() {
         notification = null;
-        notifLabel = null;
+        notificationLabel = null;
     }
 }
