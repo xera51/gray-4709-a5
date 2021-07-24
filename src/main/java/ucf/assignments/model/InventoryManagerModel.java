@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// TODO potentially make key change if sn changed (currently controller is doing it - should not be)
+// NOTE: Should make at least some fields properties
 public class InventoryManagerModel {
     /***************************************************************************
      *                                                                         *
@@ -33,42 +33,25 @@ public class InventoryManagerModel {
      *                                                                         *
      **************************************************************************/
     public InventoryManagerModel() {
+        // Updates the List when the Map updates
         itemMap.addListener((MapChangeListener<String, Item>) change -> {
-            if(change.wasAdded()) {
+            if (change.wasAdded()) {
                 itemList.add(change.getValueAdded());
-            } else if(change.wasRemoved()) {
+            } else if (change.wasRemoved()) {
                 itemList.remove(change.getValueRemoved());
             }
         });
     }
 
-    public SortedList<Item> getList() {
+
+    /***************************************************************************
+     *                                                                         *
+     * Methods                                                                 *
+     *                                                                         *
+     **************************************************************************/
+
+    public SortedList<Item> getSortedList() {
         return sortedItemList;
-    }
-
-    public void add(Item item) {
-        // We must remove an item if the key was previously taken,
-        // so the ObservableList is alerted
-        if (containsSerialNumber(item.getSerialNumber())) {
-            itemMap.remove(item.getSerialNumber());
-        }
-        itemMap.put(item.getSerialNumber(), item);
-    }
-
-    public void remove(Item item) {
-        itemMap.remove(item.getSerialNumber());
-    }
-
-    public void edit(Item oldItem, Item newItem) {
-        if(oldItem.getSerialNumber().equals(newItem.getSerialNumber())) {
-            itemMap.replace(newItem.getSerialNumber(), newItem);
-        } else {
-            if (containsSerialNumber(newItem.getSerialNumber())) {
-                itemMap.remove(newItem.getSerialNumber());
-            }
-            itemMap.put(newItem.getSerialNumber(), newItem);
-            itemMap.remove(oldItem.getSerialNumber());
-        }
     }
 
     public void setFilter(String name, String serialNumber) {
@@ -77,8 +60,59 @@ public class InventoryManagerModel {
                         && item.getSerialNumber().contains(serialNumber));
     }
 
+    public void addItem(Item item) {
+        // We must remove an item if the key was previously taken,
+        // so the ObservableList is alerted
+        if (containsSerialNumber(item.getSerialNumber())) {
+            itemMap.remove(item.getSerialNumber());
+        }
+        itemMap.put(item.getSerialNumber(), item);
+    }
+
+    public void deleteItem(Item item) {
+        itemMap.remove(item.getSerialNumber());
+    }
+
+    public void loadInventory() {
+        if (!isBound()) return;
+
+        itemMap.clear();
+        itemMap.putAll(
+                dataAccessObject.getItems().stream().collect(
+                        Collectors.toMap(Item::getSerialNumber, Function.identity()))
+        );
+    }
+
+    public void saveInventory() {
+        if (!isBound()) return;
+        dataAccessObject.saveItems(this.itemList);
+    }
+
+    public void deleteInventory() {
+        dataAccessObject.delete();
+        closeInventory();
+    }
+
+    public void closeInventory() {
+        itemMap.clear();
+        unbind();
+    }
+
     public boolean containsSerialNumber(String serialNumber) {
         return itemMap.containsKey(serialNumber);
+    }
+
+    // NOTE: Pushes the item to the end of the list if in an unsorted state
+    // Set over Map to prevent duplicates might be better, but that
+    // comes with the issue of locating Items by their Serial Number
+    // being time consuming. (Cant be in another thread either because it
+    // is used when the item needs to be displayed to the user immediately)
+    // Alternatively, Some way to ensure this operation inserts the item back
+    // where it was could be a solution. Either way, this would need to be changed
+    public void updateSerialNumber(String oldSerialNumber, String newSerialNumber) {
+        Item item = itemMap.remove(oldSerialNumber);
+        item.setSerialNumber(newSerialNumber);
+        itemMap.put(newSerialNumber, item);
     }
 
     public Item getItemBySerialNumber(String serialNumber) {
@@ -97,25 +131,4 @@ public class InventoryManagerModel {
         return dataAccessObject != null;
     }
 
-    public void save() {
-        dataAccessObject.saveItems(this.itemList);
-    }
-
-    public void load() {
-        itemMap.clear();
-        itemMap.putAll(
-            dataAccessObject.getItems().stream().collect(
-                Collectors.toMap(Item::getSerialNumber, Function.identity()))
-        );
-    }
-
-    public void close() {
-        itemMap.clear();
-        dataAccessObject = null;
-    }
-
-    public void delete() {
-        dataAccessObject.delete();
-        close();
-    }
 }

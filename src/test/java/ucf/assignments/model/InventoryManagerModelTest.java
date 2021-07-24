@@ -17,9 +17,9 @@ class InventoryManagerModelTest {
         InventoryManagerModel model = new InventoryManagerModel();
         Item item = new Item("My Item", "ABCDE12345", 39.99);
 
-        model.add(item);
+        model.addItem(item);
 
-        assertTrue(model.getList().contains(item));
+        assertTrue(model.getSortedList().contains(item));
     }
 
     @Test
@@ -27,10 +27,10 @@ class InventoryManagerModelTest {
         InventoryManagerModel model = new InventoryManagerModel();
         Item item = new Item("My Item", "ABCDE12345", 39.99);
 
-        model.add(item);
-        model.remove(item);
+        model.addItem(item);
+        model.deleteItem(item);
 
-        assertFalse(model.getList().contains(item));
+        assertFalse(model.getSortedList().contains(item));
     }
 
     @Test
@@ -84,12 +84,12 @@ class InventoryManagerModelTest {
         Item firstItem = new Item("My Item", "ABCDE12345", 39.99);
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
-        model.add(firstItem);
-        model.add(secondItem);
+        model.addItem(firstItem);
+        model.addItem(secondItem);
 
         model.setFilter("", "A");
 
-        assertTrue(model.getList().contains(firstItem) && !model.getList().contains(secondItem));
+        assertTrue(model.getSortedList().contains(firstItem) && !model.getSortedList().contains(secondItem));
     }
 
     @Test
@@ -98,12 +98,12 @@ class InventoryManagerModelTest {
         Item firstItem = new Item("My Item", "ABCDE12345", 39.99);
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
-        model.add(firstItem);
-        model.add(secondItem);
+        model.addItem(firstItem);
+        model.addItem(secondItem);
 
         model.setFilter("New", "");
 
-        assertTrue(!model.getList().contains(firstItem) && model.getList().contains(secondItem));
+        assertTrue(!model.getSortedList().contains(firstItem) && model.getSortedList().contains(secondItem));
     }
 
     @Test
@@ -112,12 +112,12 @@ class InventoryManagerModelTest {
         Item firstItem = new Item("My Item", "ABCDE12345", 39.99);
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
-        model.add(firstItem);
-        model.add(secondItem);
+        model.addItem(firstItem);
+        model.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.json").toPath();
         model.bindFile(filePath);
-        model.save();
+        model.saveInventory();
 
         try {
             String expected = """
@@ -147,12 +147,12 @@ class InventoryManagerModelTest {
         Item firstItem = new Item("My Item", "ABCDE12345", 39.99);
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
-        model.add(firstItem);
-        model.add(secondItem);
+        model.addItem(firstItem);
+        model.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.txt").toPath();
         model.bindFile(filePath);
-        model.save();
+        model.saveInventory();
 
         try {
             String expected = "My Item\tABCDE12345\t39.99\n" +
@@ -171,12 +171,12 @@ class InventoryManagerModelTest {
         Item firstItem = new Item("My Item", "ABCDE12345", 39.99);
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
-        model.add(firstItem);
-        model.add(secondItem);
+        model.addItem(firstItem);
+        model.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.html").toPath();
         model.bindFile(filePath);
-        model.save();
+        model.saveInventory();
 
         try {
             String expected = """
@@ -212,17 +212,17 @@ class InventoryManagerModelTest {
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
         InventoryManagerModel tempModel = new InventoryManagerModel();
-        tempModel.add(firstItem);
-        tempModel.add(secondItem);
+        tempModel.addItem(firstItem);
+        tempModel.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.json").toPath();
         model.bindFile(filePath);
         tempModel.bindFile(filePath);
 
-        tempModel.save();
-        model.load();
+        tempModel.saveInventory();
+        model.loadInventory();
 
-        assertTrue(model.getList().contains(firstItem) && model.getList().contains(secondItem));
+        assertTrue(model.getSortedList().contains(firstItem) && model.getSortedList().contains(secondItem));
 
         try {
             Files.delete(filePath);
@@ -238,17 +238,17 @@ class InventoryManagerModelTest {
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
         InventoryManagerModel tempModel = new InventoryManagerModel();
-        tempModel.add(firstItem);
-        tempModel.add(secondItem);
+        tempModel.addItem(firstItem);
+        tempModel.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.txt").toPath();
         model.bindFile(filePath);
         tempModel.bindFile(filePath);
 
-        tempModel.save();
-        model.load();
+        tempModel.saveInventory();
+        model.loadInventory();
 
-        assertTrue(model.getList().contains(firstItem) && model.getList().contains(secondItem));
+        assertTrue(model.getSortedList().contains(firstItem) && model.getSortedList().contains(secondItem));
 
         try {
             Files.delete(filePath);
@@ -264,17 +264,17 @@ class InventoryManagerModelTest {
         Item secondItem = new Item("My New Item", "QWERTYUIOP", 49.99);
 
         InventoryManagerModel tempModel = new InventoryManagerModel();
-        tempModel.add(firstItem);
-        tempModel.add(secondItem);
+        tempModel.addItem(firstItem);
+        tempModel.addItem(secondItem);
 
         Path filePath = new File(System.getProperty("user.dir") + "/inventories/testlist.html").toPath();
         model.bindFile(filePath);
         tempModel.bindFile(filePath);
 
-        tempModel.save();
-        model.load();
+        tempModel.saveInventory();
+        model.loadInventory();
 
-        assertTrue(model.getList().contains(firstItem) && model.getList().contains(secondItem));
+        assertTrue(model.getSortedList().contains(firstItem) && model.getSortedList().contains(secondItem));
 
         try {
             Files.delete(filePath);
