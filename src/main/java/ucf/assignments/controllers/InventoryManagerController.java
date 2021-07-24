@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.controllers;
 
 import javafx.application.Platform;
@@ -14,8 +19,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
-import net.xera51.javafx.control.Notification;
 import ucf.assignments.controls.LimitedTextField;
+import ucf.assignments.controls.Notification;
 import ucf.assignments.factories.DialogFactories;
 import ucf.assignments.factories.ValidatingTableCell;
 import ucf.assignments.model.InventoryManagerModel;
@@ -102,11 +107,11 @@ public class InventoryManagerController {
                 () -> new LimitedTextField(10),
                 (sn, cell) -> {
                     if (sn.matches("[A-Za-z0-9]{10}")) {
-                        if(model.containsSerialNumber(sn)) {
+                        if (model.containsSerialNumber(sn)) {
                             //noinspection rawtypes
                             return DialogFactories.getDuplicateSerialDialog(
                                     model.getItemBySerialNumber(sn),
-                                    (Item)((TableCell)cell).getTableRow().getItem(),
+                                    (Item) ((TableCell) cell).getTableRow().getItem(),
                                     stage).showAndWait().orElse(false);
                         } else {
                             return true;
@@ -157,8 +162,8 @@ public class InventoryManagerController {
         // Add Button set-up
         addButton.disableProperty().bind(
                 nameField.textProperty().isEmpty().or(
-                serialNumberField.textProperty().isEmpty()).or(
-                valueField.textProperty().isEmpty())
+                        serialNumberField.textProperty().isEmpty()).or(
+                        valueField.textProperty().isEmpty())
         );
 
         // Remove Button set-up
@@ -167,7 +172,7 @@ public class InventoryManagerController {
         // TODO move to FXML when done with SceneBuilder
         // Search Icon setup
         InputStream searchIcon = this.getClass().getResourceAsStream("/ucf/assignments/images/SearchIcon.png");
-        if(searchIcon != null) {
+        if (searchIcon != null) {
             editImageView.setImage(new Image(searchIcon));
         }
 
@@ -206,19 +211,19 @@ public class InventoryManagerController {
             selectAndFocus(valueField);
             showNotification(valueField, "Must be a valid currency value");
         } else {
-                double value = Double.parseDouble(valueField.getText());
-                Item newItem = new Item(nameField.getText(), serialNumberField.getText().toUpperCase(), value);
-                if(!model.containsSerialNumber(serialNumberField.getText().toUpperCase()) ||
-                        DialogFactories.getDuplicateSerialDialog(
-                                model.getItemBySerialNumber(serialNumberField.getText().toUpperCase()),
-                                newItem,
-                                stage).showAndWait().orElse(false)) {
-                    model.addItem(newItem);
-                    clearAddFields();
-                    saved = false;
-                } else {
-                    selectAndFocus(serialNumberField);
-                }
+            double value = Double.parseDouble(valueField.getText());
+            Item newItem = new Item(nameField.getText(), serialNumberField.getText().toUpperCase(), value);
+            if (!model.containsSerialNumber(serialNumberField.getText().toUpperCase()) ||
+                    DialogFactories.getDuplicateSerialDialog(
+                            model.getItemBySerialNumber(serialNumberField.getText().toUpperCase()),
+                            newItem,
+                            stage).showAndWait().orElse(false)) {
+                model.addItem(newItem);
+                clearAddFields();
+                saved = false;
+            } else {
+                selectAndFocus(serialNumberField);
+            }
         }
         event.consume();
     }
@@ -262,7 +267,7 @@ public class InventoryManagerController {
 
     @FXML
     void saveInv(ActionEvent event) {
-        if(model.isBound()) {
+        if (model.isBound()) {
             model.saveInventory();
             saved = true;
         } else {
@@ -274,7 +279,7 @@ public class InventoryManagerController {
     @FXML
     void saveAsInv(ActionEvent event) {
         File file = showSaveFileChooser();
-        if(file != null) {
+        if (file != null) {
             model.bindFile(file.toPath());
             model.saveInventory();
             saved = true;
@@ -285,7 +290,7 @@ public class InventoryManagerController {
 
     @FXML
     void deleteInv(ActionEvent event) {
-        if(model.isBound()) {
+        if (model.isBound()) {
             model.deleteInventory();
         }
         event.consume();
@@ -299,7 +304,7 @@ public class InventoryManagerController {
 
     private void onExitRequest() {
         confirmIfNotSaved();
-        if(saved) {
+        if (saved) {
             Platform.exit();
         }
     }
@@ -332,13 +337,13 @@ public class InventoryManagerController {
     }
 
     private void clearAddFields() {
-        for(TextField field : addFields) {
+        for (TextField field : addFields) {
             field.clear();
         }
     }
 
     private void confirmIfNotSaved() {
-        if(!saved) {
+        if (!saved) {
             saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
         }
     }
@@ -372,7 +377,7 @@ public class InventoryManagerController {
         try {
             Double.parseDouble(str);
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }

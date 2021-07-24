@@ -17,12 +17,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 // TODO what to do with exceptions?
-public class InventoryFileDAO implements InventoryDAO{
+public class InventoryFileDAO implements InventoryDAO {
 
     private final Serializer serializer;
     private final Path path;
 
-    public InventoryFileDAO(Path path){
+    public InventoryFileDAO(Path path) {
         this.serializer = createSerializer(path);
         this.path = path;
     }
@@ -67,7 +67,7 @@ public class InventoryFileDAO implements InventoryDAO{
 
     private Serializer createSerializer(Path path) {
         String fileName = path.toString().toLowerCase();
-        if(fileName.endsWith(".json")) {
+        if (fileName.endsWith(".json")) {
             return new InventoryJSONSerializer();
         } else if (fileName.endsWith(".html")) {
             return new InventoryHTMLSerializer();

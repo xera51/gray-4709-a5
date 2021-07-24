@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.factories;
 
 import javafx.scene.control.ButtonType;
@@ -11,7 +16,6 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class DialogFactories {
-
 
     public static Dialog<Boolean> getDuplicateSerialDialog(Item oldItem, Item newItem, Stage owner) {
         Dialog<Boolean> duplicateSerialDialog = new Dialog<>();

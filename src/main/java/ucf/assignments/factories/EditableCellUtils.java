@@ -1,17 +1,19 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Code derived from javafx.scene.control.cell.CellUtils.java from the OpenJFX project
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.factories;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Side;
-import javafx.scene.control.*;
+import javafx.scene.control.Cell;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.util.StringConverter;
-import net.xera51.javafx.control.Notification;
+import ucf.assignments.controls.Notification;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EditableCellUtils {
@@ -26,15 +28,14 @@ public class EditableCellUtils {
         textField.setText(converter.toString(cell.getItem()));
 
         textField.setOnAction(event -> {
-            if(textField.getText().equals(converter.toString(cell.getItem()))) {
+            if (textField.getText().equals(converter.toString(cell.getItem()))) {
                 cell.cancelEdit();
             } else if (validator.test(converter.fromString(textField.getText()), cell)) {
                 cell.commitEdit(converter.fromString(textField.getText()));
             } else {
                 textField.selectAll();
                 textField.requestFocus();
-                Notification errorNotification = new Notification(errorMessage);
-                errorNotification.show(textField, Side.BOTTOM, 5, 0);
+                new Notification(errorMessage).show(textField, Side.BOTTOM, 5, 0);
             }
             event.consume();
         });

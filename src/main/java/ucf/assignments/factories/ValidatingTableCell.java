@@ -1,3 +1,9 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Code derived from javafx.scene.control.cell.TextFieldTableCell.java from the OpenJFX project
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.factories;
 
 import javafx.scene.control.Cell;
@@ -6,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ValidatingTableCell<S, T> extends TableCell<S, T> {
@@ -26,10 +31,10 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
             textFieldFactory = TextField::new;
         }
         if (validator == null) {
-            throw new NullPointerException("validator can't be null");
+            throw new NullPointerException("Validator can't be null");
         }
         if (converter == null) {
-            throw new NullPointerException("converter can't be null");
+            throw new NullPointerException("StringConverter can't be null");
         }
         this.textFieldFactory = textFieldFactory;
         this.validator = validator;
@@ -66,7 +71,8 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
 
         if (isEditing()) {
             if (textField == null) {
-                textField = EditableCellUtils.createValidatedTextField(this, converter, textFieldFactory, validator, errorMessage);
+                textField = EditableCellUtils.createValidatedTextField(
+                        this, converter, textFieldFactory, validator, errorMessage);
             }
 
             textField.setText(converter.toString(this.getItem()));

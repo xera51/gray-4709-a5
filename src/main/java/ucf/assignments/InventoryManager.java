@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments;
 
 import javafx.application.Application;
@@ -9,9 +14,10 @@ import ucf.assignments.controllers.InventoryManagerController;
 
 import java.io.InputStream;
 
-// TODO copyright comments
 // TODO switch TextFields to LimitedTextFields when done with SceneBuilder
+// TODO update links when done with SceneBuild
 // TODO Clean up classes to follow SRP (time permitting)
+// NOTE: Undefined behaviour when input files are not formatted correctly
 public class InventoryManager extends Application {
 
     public static void main(String[] args) {
@@ -29,7 +35,7 @@ public class InventoryManager extends Application {
         primaryStage.setScene(scene);
 
         InputStream icon = this.getClass().getResourceAsStream("/ucf/assignments/images/IconNew48.png");
-        if(icon != null) {
+        if (icon != null) {
             primaryStage.getIcons().add(new Image(icon));
         }
 
