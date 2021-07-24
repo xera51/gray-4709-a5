@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import net.xera51.javafx.control.Notification;
-import org.w3c.dom.Text;
 import ucf.assignments.controls.LimitedTextField;
 import ucf.assignments.factories.DialogFactories;
 import ucf.assignments.factories.ValidatingTableCell;
@@ -26,18 +25,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class InventoryManagerController {
 
+    Stage stage;
     InventoryManagerModel model = new InventoryManagerModel();
     FileChooser fileChooser = new FileChooser();
-    File lastUsedDirectory;
-    Stage stage;
-
     List<TextField> addFields = new ArrayList<>();
-
-    // TODO update on edit
     boolean saved = true;
 
     @FXML
@@ -58,7 +56,6 @@ public class InventoryManagerController {
     @FXML
     private TextField serialNumberFilter;
 
-    // TODO disable when fields empty
     @FXML
     private Button addButton;
 
@@ -83,15 +80,16 @@ public class InventoryManagerController {
     }
 
     public void initialize() {
-        // TODO consider blending extension filters into one
-        // TODO make sure /inventories/ directory exists, create if not
-        // TODO use last successful directory
         // FileChooser set-up
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"), new FileChooser.ExtensionFilter("HTML", "*.html"), new FileChooser.ExtensionFilter("TSV", "*.txt"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Inventory", "*.json", "*.html", "*.txt"));
         fileChooser.setInitialDirectory(getDefaultDirectory());
 
         // TODO add placeholder for tableview
-        // Table set-up
+        // Table Set-up
+        itemTable.setItems(model.getSortedList());
+        model.getSortedList().comparatorProperty().bind(itemTable.comparatorProperty());
+
+        // Table Column Set-up
         serialNumberColumn.setText("Serial Number");
         nameColumn.setText("Name");
         valueColumn.setText("Value");
@@ -105,6 +103,7 @@ public class InventoryManagerController {
                 (sn, cell) -> {
                     if (sn.matches("[A-Za-z0-9]{10}")) {
                         if(model.containsSerialNumber(sn)) {
+                            //noinspection rawtypes
                             return DialogFactories.getDuplicateSerialDialog(
                                     model.getItemBySerialNumber(sn),
                                     (Item)((TableCell)cell).getTableRow().getItem(),
@@ -117,15 +116,16 @@ public class InventoryManagerController {
                     }
                 },
                 new DefaultStringConverter(),
-                "Serial Numbers must be exactly 10 characters and only contain letters and numbers"
+                "Serial Numbers must be exactly 10 characters and contain only letters and numbers"
         ));
+
         nameColumn.setCellFactory(param -> new ValidatingTableCell<>(
                 () -> new LimitedTextField(256),
                 (name, cell) -> name.length() >= 2,
                 new DefaultStringConverter(),
                 "Items must be at least 2 characters"
         ));
-        // TODO editing being weird with comma
+
         valueColumn.setCellFactory(param -> new ValidatingTableCell<>(
                 null,
                 (bigDecimal, bigDecimalCell) -> bigDecimal != null,
@@ -147,30 +147,26 @@ public class InventoryManagerController {
                 "Must be a valid currency value"
         ));
 
+        nameColumn.addEventHandler(TableColumn.<Item, String>editCommitEvent(), event -> saved = false);
         serialNumberColumn.setOnEditCommit(event -> {
-            Item newItem = new Item(event.getRowValue().getName(), event.getNewValue(), event.getRowValue().getValue());
-            model.edit(event.getRowValue(), newItem);
+            model.updateSerialNumber(event.getOldValue(), event.getNewValue().toUpperCase());
             saved = false;
         });
-        nameColumn.setOnEditCommit(event -> saved = false);
-        valueColumn.setOnEditCommit(event -> saved = false);
-
-
-        itemTable.setItems(model.getList());
-        model.getList().comparatorProperty().bind(itemTable.comparatorProperty());
+        valueColumn.addEventHandler(TableColumn.<Item, String>editCommitEvent(), event -> saved = false);
 
         // Add Button set-up
         addButton.disableProperty().bind(
-                nameField.textProperty().isEmpty()
-                        .or(serialNumberField.textProperty().isEmpty())
-                        .or(valueField.textProperty().isEmpty())
+                nameField.textProperty().isEmpty().or(
+                serialNumberField.textProperty().isEmpty()).or(
+                valueField.textProperty().isEmpty())
         );
 
         // Remove Button set-up
         removeButton.disableProperty().bind(itemTable.getSelectionModel().selectedIndexProperty().lessThan(0));
 
+        // TODO move to FXML when done with SceneBuilder
         // Search Icon setup
-        InputStream searchIcon = this.getClass().getResourceAsStream("/ucf/assignments/fxml/SearchIcon.png");
+        InputStream searchIcon = this.getClass().getResourceAsStream("/ucf/assignments/images/SearchIcon.png");
         if(searchIcon != null) {
             editImageView.setImage(new Image(searchIcon));
         }
@@ -187,7 +183,7 @@ public class InventoryManagerController {
 
     @FXML
     void printMap(ActionEvent event) {
-        // help
+        // TODO help
         event.consume();
     }
 
@@ -200,51 +196,36 @@ public class InventoryManagerController {
     @FXML
     void addItem(ActionEvent event) {
         if (nameField.getText().length() < 2) {
-            nameField.selectAll();
-            nameField.requestFocus();
+            selectAndFocus(nameField);
             showNotification(nameField, "Items must be at least 2 characters");
         } else if (!serialNumberField.getText().matches("[A-Za-z0-9]{10}")) {
-            serialNumberField.selectAll();
-            serialNumberField.requestFocus();
+            selectAndFocus(serialNumberField);
             showNotification(serialNumberField,
                     "Serial Numbers must be exactly 10 characters and only contain letters and numbers");
+        } else if (!isDoubleValue(valueField.getText())) {
+            selectAndFocus(valueField);
+            showNotification(valueField, "Must be a valid currency value");
         } else {
-            try {
-                BigDecimal value = BigDecimal.valueOf(Double.parseDouble(valueField.getText()));
-                Item newItem = new Item(nameField.getText(), serialNumberField.getText(), value);
-                if(!model.containsSerialNumber(serialNumberField.getText())) {
-                    model.add(newItem);
-                    nameField.clear();
-                    serialNumberField.clear();
-                    valueField.clear();
+                double value = Double.parseDouble(valueField.getText());
+                Item newItem = new Item(nameField.getText(), serialNumberField.getText().toUpperCase(), value);
+                if(!model.containsSerialNumber(serialNumberField.getText().toUpperCase()) ||
+                        DialogFactories.getDuplicateSerialDialog(
+                                model.getItemBySerialNumber(serialNumberField.getText().toUpperCase()),
+                                newItem,
+                                stage).showAndWait().orElse(false)) {
+                    model.addItem(newItem);
+                    clearAddFields();
                     saved = false;
                 } else {
-                    if (DialogFactories.getDuplicateSerialDialog(
-                            model.getItemBySerialNumber(serialNumberField.getText()),
-                            newItem,
-                            stage).showAndWait().orElse(false)) {
-                        model.add(newItem);
-                        nameField.clear();
-                        serialNumberField.clear();
-                        valueField.clear();
-                        saved = false;
-                    } else {
-                        serialNumberField.selectAll();
-                        serialNumberField.requestFocus();
-                    }
+                    selectAndFocus(serialNumberField);
                 }
-            } catch (NumberFormatException e) {
-                valueField.selectAll();
-                valueField.requestFocus();
-                showNotification(valueField, "Must be a valid currency value");
-            }
         }
         event.consume();
     }
 
     @FXML
     void removeItem(ActionEvent event) {
-        model.remove(itemTable.getSelectionModel().getSelectedItem());
+        model.deleteItem(itemTable.getSelectionModel().getSelectedItem());
         saved = false;
         event.consume();
     }
@@ -259,7 +240,7 @@ public class InventoryManagerController {
     void newInv(ActionEvent event) {
         confirmIfNotSaved();
         if (saved) {
-            model.close();
+            model.closeInventory();
             clearAddFields();
         }
         event.consume();
@@ -269,10 +250,10 @@ public class InventoryManagerController {
     void openInv(ActionEvent event) {
         confirmIfNotSaved();
         if (saved) {
-            File file = showFileChooser();
+            File file = showOpenFileChooser();
             if (file != null) {
                 model.bindFile(file.toPath());
-                model.load();
+                model.loadInventory();
                 clearAddFields();
             }
         }
@@ -282,7 +263,7 @@ public class InventoryManagerController {
     @FXML
     void saveInv(ActionEvent event) {
         if(model.isBound()) {
-            model.save();
+            model.saveInventory();
             saved = true;
         } else {
             saveAsInv(event);
@@ -292,10 +273,10 @@ public class InventoryManagerController {
 
     @FXML
     void saveAsInv(ActionEvent event) {
-        File file = showFileChooser();
+        File file = showSaveFileChooser();
         if(file != null) {
             model.bindFile(file.toPath());
-            model.save();
+            model.saveInventory();
             saved = true;
         }
         event.consume();
@@ -305,7 +286,7 @@ public class InventoryManagerController {
     @FXML
     void deleteInv(ActionEvent event) {
         if(model.isBound()) {
-            model.delete();
+            model.deleteInventory();
         }
         event.consume();
     }
@@ -317,9 +298,7 @@ public class InventoryManagerController {
     }
 
     private void onExitRequest() {
-        if(!saved) {
-            saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
-        }
+        confirmIfNotSaved();
         if(saved) {
             Platform.exit();
         }
@@ -336,7 +315,7 @@ public class InventoryManagerController {
         new Notification(message).show(node, Side.TOP, 5, 0);
     }
 
-    private void setDirectory(FileChooser fileChooser) {
+    private void setDirectory() {
         if (!fileChooser.getInitialDirectory().exists()) {
             fileChooser.setInitialDirectory(getDefaultDirectory());
         }
@@ -346,6 +325,7 @@ public class InventoryManagerController {
         File inventoryDirectory = new File(System.getProperty("user.dir") +
                 File.separator + "inventories" + File.separator);
         if (!inventoryDirectory.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             inventoryDirectory.mkdir();
         }
         return inventoryDirectory;
@@ -363,12 +343,39 @@ public class InventoryManagerController {
         }
     }
 
-    private File showFileChooser() {
+    private File showOpenFileChooser() {
+        fileChooser.setTitle("Open");
+        setDirectory();
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             fileChooser.setInitialDirectory(file.getParentFile());
         }
         return file;
     }
+
+    private File showSaveFileChooser() {
+        fileChooser.setTitle("Save As");
+        setDirectory();
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            fileChooser.setInitialDirectory(file.getParentFile());
+        }
+        return file;
+    }
+
+    private void selectAndFocus(TextField textField) {
+        textField.selectAll();
+        textField.requestFocus();
+    }
+
+    private boolean isDoubleValue(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
 
 }
