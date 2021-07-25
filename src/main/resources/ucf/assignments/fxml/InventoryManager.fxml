@@ -80,7 +80,7 @@
                   <LimitedTextField id="serialNumberField" fx:id="serialNumberField" endIndex="10" promptText="Serial Number" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <LimitedTextField id="nameField" fx:id="nameField" endIndex="256" promptText="Name" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                   <Button id="addButton" fx:id="addButton" mnemonicParsing="false" onAction="#addItem" text="Add Item" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                  <Button id="removeButton" fx:id="removeButton" mnemonicParsing="false" onAction="#removeItem" text="Remove Selected" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                  <Button id="removeButton" fx:id="removeButton" mnemonicParsing="false" onAction="#removeItem" text="Remove Selected Item" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </bottom>
