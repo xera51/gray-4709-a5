@@ -16,50 +16,47 @@ import java.util.Locale;
 
 public class DialogFactories {
 
-    private static Dialog<Boolean> duplicateSerialDialog;
     private static Dialog<ButtonType> notSavedWarning;
 
     public static Dialog<Boolean> getDuplicateSerialDialog(Item oldItem, Item newItem, Stage owner) {
-        if (duplicateSerialDialog == null) {
-            Dialog<Boolean> duplicateSerialDialog = new Dialog<>();
-            DialogPane dialogPane = duplicateSerialDialog.getDialogPane();
+        // Should not have to recreate Dialog every time but should still update items
+        Dialog<Boolean> duplicateSerialDialog = new Dialog<>();
+        DialogPane dialogPane = duplicateSerialDialog.getDialogPane();
 
-            ButtonType overwrite = new ButtonType("Overwrite", ButtonBar.ButtonData.OK_DONE);
-            dialogPane.getButtonTypes().setAll(overwrite, ButtonType.CANCEL);
+        ButtonType overwrite = new ButtonType("Overwrite", ButtonBar.ButtonData.OK_DONE);
+        dialogPane.getButtonTypes().setAll(overwrite, ButtonType.CANCEL);
 
-            GridPane pane = new GridPane();
-            Label alertMessage = new Label(
-                    "Another item is using that serial number. Would you like to replace it?"
-            );
-            Label oldItemName = new Label("Old Item: " + oldItem.getName());
-            Label oldItemSerialNumber = new Label("Serial Number: " + oldItem.getSerialNumber());
-            Label oldItemValue = new Label(
-                            " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(oldItem.getValue())
-            );
-            Label newItemName = new Label("New Item: " + newItem.getName());
-            Label newItemSerialNumber = new Label("Serial Number: " + newItem.getSerialNumber());
-            Label newItemValue = new Label(
-                    " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(newItem.getValue())
-            );
+        GridPane pane = new GridPane();
+        Label alertMessage = new Label(
+                "Another item is using that serial number. Would you like to replace it?"
+        );
+        Label oldItemName = new Label("Old Item: " + oldItem.getName());
+        Label oldItemSerialNumber = new Label("Serial Number: " + oldItem.getSerialNumber());
+        Label oldItemValue = new Label(
+                        " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(oldItem.getValue())
+        );
+        Label newItemName = new Label("New Item: " + newItem.getName());
+        Label newItemSerialNumber = new Label("Serial Number: " + newItem.getSerialNumber());
+        Label newItemValue = new Label(
+                " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(newItem.getValue())
+        );
 
-            alertMessage.setStyle("-fx-font-weight: bold");
+        alertMessage.setStyle("-fx-font-weight: bold");
 
-            pane.addRow(0, alertMessage);
-            GridPane.setColumnSpan(alertMessage, GridPane.REMAINING);
-            pane.addRow(1, oldItemName, oldItemSerialNumber, oldItemValue);
-            pane.addRow(2, newItemName, newItemSerialNumber, newItemValue);
-            pane.setPrefWidth(Region.USE_COMPUTED_SIZE);
-            pane.setVgap(6);
-            pane.setHgap(6);
+        pane.addRow(0, alertMessage);
+        GridPane.setColumnSpan(alertMessage, GridPane.REMAINING);
+        pane.addRow(1, oldItemName, oldItemSerialNumber, oldItemValue);
+        pane.addRow(2, newItemName, newItemSerialNumber, newItemValue);
+        pane.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        pane.setVgap(6);
+        pane.setHgap(6);
 
-            duplicateSerialDialog.setResultConverter(param -> param == overwrite);
-            duplicateSerialDialog.setTitle("Inventory Manager");
-            dialogPane.setContent(pane);
-            duplicateSerialDialog.initOwner(owner);
-            addCssFile(duplicateSerialDialog);
-            dialogPane.getStyleClass().add("duplicateSerialDialog");
-            DialogFactories.duplicateSerialDialog = duplicateSerialDialog;
-        }
+        duplicateSerialDialog.setResultConverter(param -> param == overwrite);
+        duplicateSerialDialog.setTitle("Inventory Manager");
+        dialogPane.setContent(pane);
+        duplicateSerialDialog.initOwner(owner);
+        addCssFile(duplicateSerialDialog);
+        dialogPane.getStyleClass().add("duplicateSerialDialog");
         return duplicateSerialDialog;
     }
 
