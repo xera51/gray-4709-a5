@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Chair",
+    "serialNumber": "ODP94JDSIS",
+    "value": "59.99"
+  },
+  {
+    "name": "Cell Phone",
+    "serialNumber": "89DIOQJ34K",
+    "value": "549.33"
+  },
+  {
+    "name": "TV",
+    "serialNumber": "UIQTV8EI21",
+    "value": "849.99"
+  },
+  {
+    "name": "Computer",
+    "serialNumber": "PC49D019DS",
+    "value": "769.49"
+  },
+  {
+    "name": "Lamp",
+    "serialNumber": "LK43JGSOIG",
+    "value": "39.99"
+  },
+  {
+    "name": "Rug",
+    "serialNumber": "UIOP43U29P",
+    "value": "54.29"
+  },
+  {
+    "name": "Candle",
+    "serialNumber": "RAN90I23RU",
+    "value": "14.99"
+  },
+  {
+    "name": "Table",
+    "serialNumber": "34NKL28FAU",
+    "value": "149.97"
+  }
+]
