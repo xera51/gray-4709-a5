@@ -59,9 +59,6 @@ public class InventoryManagerController {
     private TextField serialNumberFilter;
 
     @FXML
-    private Button addButton;
-
-    @FXML
     private TextField serialNumberField;
 
     @FXML
@@ -69,6 +66,9 @@ public class InventoryManagerController {
 
     @FXML
     private TextField valueField;
+
+    @FXML
+    private Button addButton;
 
     @FXML
     private Button removeButton;
@@ -216,12 +216,6 @@ public class InventoryManagerController {
     }
 
     @FXML
-    void updateFilter(KeyEvent event) {
-        model.setFilter(nameFilter.getText(), serialNumberFilter.getText());
-        event.consume();
-    }
-
-    @FXML
     void newInv(ActionEvent event) {
         confirmIfNotSaved();
         if (saved) {
@@ -278,16 +272,15 @@ public class InventoryManagerController {
     }
 
     @FXML
-    void onExit(ActionEvent event) {
-        onExitRequest();
+    void updateFilter(KeyEvent event) {
+        model.setFilter(nameFilter.getText(), serialNumberFilter.getText());
         event.consume();
     }
 
-    private void onExitRequest() {
-        confirmIfNotSaved();
-        if (saved) {
-            Platform.exit();
-        }
+    @FXML
+    void onExit(ActionEvent event) {
+        onExitRequest();
+        event.consume();
     }
 
     /***************************************************************************
@@ -370,5 +363,10 @@ public class InventoryManagerController {
         }
     }
 
-
+    private void onExitRequest() {
+        confirmIfNotSaved();
+        if (saved) {
+            Platform.exit();
+        }
+    }
 }
