@@ -7,24 +7,48 @@ package ucf.assignments #ADD {
         + start(Stage primaryStage): void
     }
 
-    interface Serializer {
-        + from(String items): Collection<? extends Item>
-        + to(Collection<? extends Item> items): String
-    }
+    class InventoryManagerController {
+        - stage : Stage
+        - model : InventoryManagerModel
+        - fileChooser : FileChooser
+        - addFields : List<TextField>
+        - saved : boolean
 
-    class InventoryJSONSerializer {
-        + from(String items): Collection<? extends Item>
-        + to(Collection<? extends Item> items): String
-    }
+        - itemTable : TableView<Item>
+        - serialNumberColumn : TableColumn<Item, String>
+        - nameColumn : TableColumn<Item, String>
+        - valueColumn : TableColumn<Item, BigDecimal>
+        - nameFilter : TextField
+        - serialNumberFilter : TextField
+        - addButton : Button
+        - serialNumberField : TextField
+        - nameField : TextField
+        - valueField : TextField
+        - removeButton : Button
 
-    class InventoryHTMLSerializer {
-        + from(String items): Collection<? extends Item>
-        + to(Collection<? extends Item> items): String
-    }
-
-    class InventoryTSVSerializer {
-        + from(String items): Collection<? extends Item>
-        + to(Collection<? extends Item> items): String
+        + initialize(): void
+        + InventoryManagerController(Stage stage): InventoryManagerController
+        __Event Handlers__
+        ~ addItem(ActionEvent event): void
+        ~ removeItem(ActionEvent event): void
+        ~ newInv(ActionEvent event): void
+        ~ openInv(ActionEvent event): void
+        ~ saveInv(ActionEvent event): void
+        ~ saveAsInv(ActionEvent event): void
+        ~ deleteInv(ActionEvent event): void
+        ~ updateFilter(ActionEvent event): void
+        ~ onExit(ActionEvent event): void
+        __Private Implementation__
+        - showNotification(Node node, String message): void
+        - setDirectory(): void
+        - getDefaultDirectory(): File
+        - clearAddFields(): void
+        - confirmIfNotSaved(): void
+        - showOpenFileChooser(): File
+        - showSaveFileChooser(): File
+        - selectAndFocus(TextField textField): void
+        - isDoubleValue(String str): boolean
+        - onExitRequest(): void
     }
 
     class InventoryManagerModel {
@@ -34,16 +58,49 @@ package ucf.assignments #ADD {
         - sortedItemList : SortedList<Item>
 
         - dataAccessObject : InventoryDAO
+
+        + InventoryManagerModel(): InventoryManagerModel
+
+        + getSortedList(): SortedList<Item>
+        + addItem(Item item): void
+        + deleteItem(Item item): void
+        + loadInventory(): void
+        + saveInventory(): void
+        + deleteInventory(): void
+        + closeInventory(): void
+        + containsSerialNumber(String serialNumber): boolean
+        + updateSerialNumber(String oldSerialNumber, String newSerialNumber): void
+        + getItemBySerialNumber(String serialNumber): Item
+        + bindFile(Path path): void
+        + unbind(): void
+        + isBound(): boolean
     }
 
     class Item {
-        - name : String
-        - serialNumber : String
-        - value : BigDecimal
-    }
+        - name : StringProperty
+        - serialNumber : StringProperty
+        - value : ObjectProperty<BigDecimal>
 
-    class InventoryManagerController {
-         # Event Handlers()
+        + Item(String name, String serialNumber, double value): Item
+        + Item(String name, String serialNumber, BigDecimal value): Item
+
+        + nameProperty(): StringProperty
+        + setName(String value): void
+        + getName(): String
+
+        + serialNumberProperty(): StringProperty
+        + setSerialNumber(String value): void
+        + getSerialNumber(): String
+
+        + valueProperty(): ObjectProperty<BigDecimal>
+        + setValue(BigDecimal value): void
+        + getValue(): BigDecimal
+
+        + hashCode(): int
+        + equals(Object Obj): boolean
+        + toString(): String
+        - validate(String name, String serialNumber, BigDecimal value): boolean
+        + extractor(): Callback<Item, Observable[]>
     }
 
     interface InventoryDAO {
@@ -66,9 +123,30 @@ package ucf.assignments #ADD {
 
         - determineFileExtension(Path path): <? extends Serializer>
     }
+
+    interface Serializer {
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
+    }
+
+    class InventoryJSONSerializer {
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
+    }
+
+    class InventoryHTMLSerializer {
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
+    }
+
+    class InventoryTSVSerializer {
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
+    }
+
 }
 
-InventoryManager -- InventoryManagerController
+InventoryManager - InventoryManagerController
 InventoryManagerController *-- InventoryManagerModel
 InventoryManagerModel *-- InventoryDAO
 Item -* InventoryManagerModel
