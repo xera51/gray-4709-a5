@@ -22,7 +22,6 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
     private final StringConverter<T> converter;
     private TextField textField;
 
-    //TODO validator cant be null
     public ValidatingTableCell(Supplier<? extends TextField> textFieldFactory,
                                BiPredicate<T, Cell<T>> validator,
                                StringConverter<T> converter,

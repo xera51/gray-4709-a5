@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
-// TODO what to do with exceptions?
+// NOTE: Exceptions currently ignored
 public class InventoryFileDAO implements InventoryDAO {
 
     private final Serializer serializer;

@@ -108,7 +108,8 @@
     -fx-text-fill: black;
 }
 
-.button:hover {
+.button:hover,
+.button:focused {
     -fx-background-color: #11aeee;
 }
 

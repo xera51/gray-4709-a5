@@ -14,8 +14,6 @@ import ucf.assignments.controllers.InventoryManagerController;
 
 import java.io.InputStream;
 
-// TODO update links when done with SceneBuild
-// TODO Clean up classes to follow SRP (time permitting)
 // NOTE: Undefined behaviour when input files are not formatted correctly
 public class InventoryManager extends Application {
 
@@ -33,7 +31,7 @@ public class InventoryManager extends Application {
         primaryStage.setTitle("Inventory Manager");
         primaryStage.setScene(scene);
 
-        InputStream icon = this.getClass().getResourceAsStream("/ucf/assignments/images/IconNew48.png");
+        InputStream icon = this.getClass().getResourceAsStream("/ucf/assignments/images/AppIcon.png");
         if (icon != null) {
             primaryStage.getIcons().add(new Image(icon));
         }

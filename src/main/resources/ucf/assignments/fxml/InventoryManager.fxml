@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import ucf.assignments.controls.LimitedTextField?>
+<?import javafx.scene.image.Image?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@/ucf/assignments/css/InventoryManager.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.controllers.InventoryManagerController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
@@ -30,11 +31,6 @@
               <MenuItem mnemonicParsing="false" onAction="#deleteInv" text="Delete" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#printMap" text="About" />
             </items>
           </Menu>
         </menus>
@@ -57,9 +53,9 @@
          <top>
             <HBox styleClass="hbox" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fx:id="editImageView" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="editImageView" fitHeight="27" fitWidth="27" pickOnBounds="true" preserveRatio="true">
                      <image>
-
+                        <Image url="@/ucf/assignments/images/SearchIcon.png"/>
                      </image></ImageView>
                   <LimitedTextField fx:id="serialNumberFilter" endIndex="10" onKeyTyped="#updateFilter" promptText="Serial Number" />
                   <LimitedTextField fx:id="nameFilter" endIndex="256" onKeyTyped="#updateFilter" promptText="Name" />

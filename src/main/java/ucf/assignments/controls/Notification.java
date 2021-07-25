@@ -62,18 +62,13 @@ public class Notification extends PopupControl {
     public final StringProperty textProperty() {
         return text;
     }
-
     public final void setText(String value) {
         textProperty().setValue(value);
     }
-
     public final String getText() {
         return text.getValue() == null ? "" : text.getValue();
     }
-
-    private final StringProperty text = new SimpleStringProperty(this, "text", "") {
-        // TODO listeners?
-    };
+    private final StringProperty text = new SimpleStringProperty(this, "text", "");
 
 
     /**
@@ -594,10 +589,10 @@ public class Notification extends PopupControl {
     private final class CSSBridge extends PopupControl.CSSBridge {
         private Notification notification = Notification.this;
 
+        // NOTE: CSS taken from tooltip, no accessible role for notification
         CSSBridge() {
             super();
             setAccessibleRole(AccessibleRole.TOOLTIP);
-            // todo accessible role?
         }
     }
 }

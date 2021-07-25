@@ -12,8 +12,6 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -27,7 +25,6 @@ import ucf.assignments.model.InventoryManagerModel;
 import ucf.assignments.model.Item;
 
 import java.io.File;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -35,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-// TODO clear filter button
 public class InventoryManagerController {
 
     Stage stage;
@@ -76,10 +72,6 @@ public class InventoryManagerController {
 
     @FXML
     private Button removeButton;
-
-    @FXML
-    private ImageView editImageView;
-
 
     public InventoryManagerController(Stage stage) {
         this.stage = stage;
@@ -170,13 +162,6 @@ public class InventoryManagerController {
         // Remove Button set-up
         removeButton.disableProperty().bind(itemTable.getSelectionModel().selectedIndexProperty().lessThan(0));
 
-        // TODO move to FXML when done with SceneBuilder
-        // Search Icon setup
-        InputStream searchIcon = this.getClass().getResourceAsStream("/ucf/assignments/images/SearchIcon.png");
-        if (searchIcon != null) {
-            editImageView.setImage(new Image(searchIcon));
-        }
-
         // Add Fields setup
         Collections.addAll(addFields, nameField, serialNumberField, valueField);
 
@@ -185,12 +170,6 @@ public class InventoryManagerController {
             onExitRequest();
             event.consume();
         });
-    }
-
-    @FXML
-    void printMap(ActionEvent event) {
-        // TODO help
-        event.consume();
     }
 
     /***************************************************************************

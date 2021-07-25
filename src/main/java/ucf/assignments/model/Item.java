@@ -14,7 +14,7 @@ import javafx.util.Callback;
 
 import java.math.BigDecimal;
 
-// TODO allow null for name and potentially other fields
+// NOTE: Constructor validates, setters do not.
 public class Item {
 
     public Item(String name, String serialNumber, double value) {
@@ -29,7 +29,6 @@ public class Item {
         }
     }
 
-    // TODO no validation. should validation be moved out of class? subclass?
     public final StringProperty nameProperty() { return name; }
     public final void setName(String value) { nameProperty().setValue(value); }
     public final String getName() { return name.getValue() == null ? "" : name.getValue(); }
