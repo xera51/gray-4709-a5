@@ -272,6 +272,7 @@ public class InventoryManagerController {
     void deleteInv(ActionEvent event) {
         if (model.isBound()) {
             model.deleteInventory();
+            saved = true;
         }
         event.consume();
     }
