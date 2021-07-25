@@ -1,4 +1,4 @@
-#Inventory Manager
+# Inventory Manager
 
 ### Getting Started
 
