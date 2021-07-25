@@ -1,0 +1,138 @@
+.root {
+    -fx-background-color: #666666;
+}
+
+.borderPane {
+    -fx-padding: 6;
+}
+
+
+.table-view:focused {
+    -fx-background-color: #3d3d3d;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+}
+
+
+
+
+.table-view .scroll-bar * {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.table-row-cell: selected {
+    -fx-background-color: #222222;
+}
+
+.table-row-cell {
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view {
+    -fx-base: skyblue;
+    -fx-background-color: #3d3d3d;
+    -fx-control-inner-background: #3d3d3d;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 6;
+}
+
+.menu-item:focused {
+    -fx-background-color: skyblue;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: black;
+}
+
+.text-field-table-cell {
+    -fx-text-fill: white;
+}
+
+.menu-item {
+    -fx-focus-color: skyblue;
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-text-fill: white;
+}
+
+.menu:hover,
+.menu:showing {
+    -fx-background-color: #11aeee;
+}
+
+.context-menu {
+    -fx-background-color: #3d3d3d;
+}
+
+.text-field-table-cell .text-field {
+    -fx-highlight-fill: skyblue;
+    -fx-highlight-text-fill: black;
+}
+
+.text-field {
+    -fx-background-color: #3d3d3d;
+    -fx-prompt-text-fill: #ffffff;
+    -fx-highlight-fill: skyblue;
+    -fx-highlight-text-fill: black;
+    -fx-text-fill: #ffffff;
+}
+
+.text-field:focused {
+    -fx-background-color: #999999;
+    -fx-prompt-text-fill: #000000;
+    -fx-highlight-fill: skyblue;
+    -fx-highlight-text-fill: black;
+    -fx-text-fill: #000000;
+}
+
+.hbox {
+    -fx-spacing: 6;
+    -fx-padding: 6 0 6 0;
+}
+
+.grid-pane {
+    -fx-hgap: 6;
+    -fx-padding: 6 0 6 0;
+}
+
+.button {
+    -fx-background-color: skyblue;
+    -fx-text-fill: black;
+}
+
+.button:hover {
+    -fx-background-color: #11aeee;
+}
+
+.menu-bar {
+    -fx-background-color: skyblue;
+}
+
+.dialog-pane .button-bar .button{
+    -fx-background-color: skyblue;
+    -fx-text-fill: black;
+}
+
+.dialog-pane .button-bar .button:hover{
+    -fx-background-color: #11aeee;
+    -fx-text-fill: black;
+}
+
+.dialog-pane .button-bar {
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.notSavedWarning .label {
+    -fx-font-weight: bold;
+}

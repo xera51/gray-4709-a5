@@ -14,7 +14,6 @@ import ucf.assignments.controllers.InventoryManagerController;
 
 import java.io.InputStream;
 
-// TODO switch TextFields to LimitedTextFields when done with SceneBuilder
 // TODO update links when done with SceneBuild
 // TODO Clean up classes to follow SRP (time permitting)
 // NOTE: Undefined behaviour when input files are not formatted correctly

@@ -5,10 +5,9 @@
 
 package ucf.assignments.factories;
 
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import ucf.assignments.model.Item;
 
@@ -17,53 +16,86 @@ import java.util.Locale;
 
 public class DialogFactories {
 
+    private static Dialog<Boolean> duplicateSerialDialog;
+    private static Dialog<ButtonType> notSavedWarning;
+
     public static Dialog<Boolean> getDuplicateSerialDialog(Item oldItem, Item newItem, Stage owner) {
-        Dialog<Boolean> duplicateSerialDialog = new Dialog<>();
+        if (duplicateSerialDialog == null) {
+            Dialog<Boolean> duplicateSerialDialog = new Dialog<>();
+            DialogPane dialogPane = duplicateSerialDialog.getDialogPane();
 
-        ButtonType overwrite = new ButtonType("Overwrite");
+            ButtonType overwrite = new ButtonType("Overwrite", ButtonBar.ButtonData.OK_DONE);
+            dialogPane.getButtonTypes().setAll(overwrite, ButtonType.CANCEL);
 
-        duplicateSerialDialog.getDialogPane().getButtonTypes().setAll(overwrite, ButtonType.CANCEL);
+            GridPane pane = new GridPane();
+            Label alertMessage = new Label(
+                    "Another item is using that serial number. Would you like to replace it?"
+            );
+            Label oldItemName = new Label("Old Item: " + oldItem.getName());
+            Label oldItemSerialNumber = new Label("Serial Number: " + oldItem.getSerialNumber());
+            Label oldItemValue = new Label(
+                            " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(oldItem.getValue())
+            );
+            Label newItemName = new Label("New Item: " + newItem.getName());
+            Label newItemSerialNumber = new Label("Serial Number: " + newItem.getSerialNumber());
+            Label newItemValue = new Label(
+                    " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(newItem.getValue())
+            );
 
-        GridPane pane = new GridPane();
-        Label alertMessage = new Label(
-                "Another item is using that serial number. Would you like to replace it?"
-        );
-        Label oldItemData = new Label(
-                "Old Item: " + oldItem.getName() + " Serial Number: " + oldItem.getSerialNumber() +
-                        " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(oldItem.getValue())
-        );
-        Label newItemData = new Label(
-                "New Item: " + newItem.getName() + " Serial Number: " + newItem.getSerialNumber() +
-                        " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(newItem.getValue())
-        );
+            alertMessage.setStyle("-fx-font-weight: bold");
 
-        pane.addRow(0, alertMessage);
-        pane.addRow(1, oldItemData);
-        pane.addRow(2, newItemData);
+            pane.addRow(0, alertMessage);
+            GridPane.setColumnSpan(alertMessage, GridPane.REMAINING);
+            pane.addRow(1, oldItemName, oldItemSerialNumber, oldItemValue);
+            pane.addRow(2, newItemName, newItemSerialNumber, newItemValue);
+            pane.setPrefWidth(Region.USE_COMPUTED_SIZE);
+            pane.setVgap(6);
+            pane.setHgap(6);
 
-        duplicateSerialDialog.setResultConverter(param -> param == overwrite);
-        duplicateSerialDialog.setTitle("Inventory Manager");
-        duplicateSerialDialog.setGraphic(pane);
-        duplicateSerialDialog.initOwner(owner);
+            duplicateSerialDialog.setResultConverter(param -> param == overwrite);
+            duplicateSerialDialog.setTitle("Inventory Manager");
+            dialogPane.setContent(pane);
+            duplicateSerialDialog.initOwner(owner);
+            addCssFile(duplicateSerialDialog);
+            dialogPane.getStyleClass().add("duplicateSerialDialog");
+            DialogFactories.duplicateSerialDialog = duplicateSerialDialog;
+        }
         return duplicateSerialDialog;
     }
 
-    public static Dialog<Boolean> getNotSavedWarning(Stage owner) {
-        Dialog<Boolean> notSavedWarning = new Dialog<>();
+    public static Dialog<ButtonType> getNotSavedWarning(Stage owner) {
+        if (notSavedWarning == null) {
+            Dialog<ButtonType> notSavedWarning = new Dialog<>();
 
-        notSavedWarning.getDialogPane().getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+            ButtonType save = new ButtonType("Save", ButtonBar.ButtonData.YES);
+            ButtonType dontSave = new ButtonType("Don't Save", ButtonBar.ButtonData.NO);
 
-        GridPane pane = new GridPane();
-        Label notSavedMessage = new Label(
-                "You have unsaved changes. Would you like to continue?"
-        );
+            notSavedWarning.getDialogPane().getButtonTypes().setAll(save, dontSave, ButtonType.CANCEL);
 
-        pane.addRow(0, notSavedMessage);
+            GridPane pane = new GridPane();
+            Label notSavedMessage = new Label(
+                    "You have unsaved changes. Would you like to save?"
+            );
 
-        notSavedWarning.setResultConverter(param -> param == ButtonType.OK);
-        notSavedWarning.setTitle("Inventory Manager");
-        notSavedWarning.setGraphic(pane);
-        notSavedWarning.initOwner(owner);
+            notSavedMessage.setPrefWidth(Region.USE_COMPUTED_SIZE);
+            notSavedMessage.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+            notSavedWarning.setTitle("Inventory Manager");
+            notSavedWarning.getDialogPane().setContent(notSavedMessage);
+            notSavedWarning.initOwner(owner);
+            addCssFile(notSavedWarning);
+            notSavedWarning.getDialogPane().getStyleClass().add("notSavedWarning");
+            DialogFactories.notSavedWarning =  notSavedWarning;
+        }
         return notSavedWarning;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private static void addCssFile(Dialog<?> dialog) {
+        dialog.getDialogPane()
+              .getStylesheets()
+              .add(DialogFactories.class
+                      .getResource("/ucf/assignments/css/InventoryManager.css")
+                      .toExternalForm());
     }
 }

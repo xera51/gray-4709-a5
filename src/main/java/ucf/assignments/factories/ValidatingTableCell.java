@@ -36,6 +36,7 @@ public class ValidatingTableCell<S, T> extends TableCell<S, T> {
         if (converter == null) {
             throw new NullPointerException("StringConverter can't be null");
         }
+        this.getStyleClass().add("text-field-table-cell");
         this.textFieldFactory = textFieldFactory;
         this.validator = validator;
         this.converter = converter;

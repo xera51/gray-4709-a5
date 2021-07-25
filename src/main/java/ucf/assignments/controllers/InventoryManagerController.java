@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+// TODO clear filter button
 public class InventoryManagerController {
 
     Stage stage;
@@ -89,10 +90,10 @@ public class InventoryManagerController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Inventory", "*.json", "*.html", "*.txt"));
         fileChooser.setInitialDirectory(getDefaultDirectory());
 
-        // TODO add placeholder for tableview
         // Table Set-up
         itemTable.setItems(model.getSortedList());
         model.getSortedList().comparatorProperty().bind(itemTable.comparatorProperty());
+        itemTable.setPlaceholder(new Label(""));
 
         // Table Column Set-up
         serialNumberColumn.setText("Serial Number");
@@ -344,7 +345,14 @@ public class InventoryManagerController {
 
     private void confirmIfNotSaved() {
         if (!saved) {
-            saved = DialogFactories.getNotSavedWarning(stage).showAndWait().orElse(false);
+            DialogFactories.getNotSavedWarning(stage).showAndWait().ifPresent(buttonType -> {
+                if (buttonType.getButtonData() == ButtonBar.ButtonData.YES) {
+                    model.saveInventory();
+                    saved = true;
+                } else if (buttonType.getButtonData() == ButtonBar.ButtonData.NO) {
+                    saved = true;
+                }
+            });
         }
     }
 
