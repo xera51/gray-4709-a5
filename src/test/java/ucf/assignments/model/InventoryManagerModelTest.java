@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Christopher Gray
+ */
+
 package ucf.assignments.model;
 
 import org.junit.jupiter.api.Test;
@@ -36,21 +41,21 @@ class InventoryManagerModelTest {
     @Test
     void edit_value() {
         // Editing is handled by ValidatingTableCell
-        // The user clicks on a cell, enters their value, and if it is valid
+        // The user clicks on a cell, enters their value, and if it is valid,
         // it is committed, which updates the model
     }
 
     @Test
     void edit_serialnumber() {
         // Editing is handled by ValidatingTableCell
-        // The user clicks on a cell, enters their value, and if it is valid
+        // The user clicks on a cell, enters their value, and if it is valid,
         // it is committed, which updates the model
     }
 
     @Test
     void edit_name() {
         // Editing is handled by ValidatingTableCell
-        // The user clicks on a cell, enters their value, and if it is valid
+        // The user clicks on a cell, enters their value, and if it is valid,
         // it is committed, which updates the model
     }
 
@@ -58,7 +63,7 @@ class InventoryManagerModelTest {
     void sort_by_value() {
         // Sorting is handled by TableView
         // The SortedList from model.getList() is set to the TableView
-        // the SortedList's comparator is bound to the TableView's comparator
+        // The SortedList's comparator is bound to the TableView's comparator
         // This performs sorting
     }
 
@@ -66,7 +71,7 @@ class InventoryManagerModelTest {
     void sort_by_serialnumber() {
         // Sorting is handled by TableView
         // The SortedList from model.getList() is set to the TableView
-        // the SortedList's comparator is bound to the TableView's comparator
+        // The SortedList's comparator is bound to the TableView's comparator
         // This performs sorting
     }
 
@@ -74,7 +79,7 @@ class InventoryManagerModelTest {
     void sort_by_name() {
         // Sorting is handled by TableView
         // The SortedList from model.getList() is set to the TableView
-        // the SortedList's comparator is bound to the TableView's comparator
+        // The SortedList's comparator is bound to the TableView's comparator
         // This performs sorting
     }
 
