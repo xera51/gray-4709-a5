@@ -36,7 +36,7 @@ public class DialogFactories {
                         " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(oldItem.getValue())
         );
         Label newItemName = new Label("New Item: " + newItem.getName());
-        Label newItemSerialNumber = new Label("Serial Number: " + newItem.getSerialNumber());
+        Label newItemSerialNumber = new Label("Serial Number: " + oldItem.getSerialNumber());
         Label newItemValue = new Label(
                 " Value: " + NumberFormat.getCurrencyInstance(Locale.US).format(newItem.getValue())
         );
