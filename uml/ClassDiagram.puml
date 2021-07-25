@@ -1,9 +1,10 @@
 @startuml
 
-package ucf.assignments {
+package ucf.assignments #ADD {
 
     class InventoryManager {
-
+        + {static} main(String[] args): void
+        + start(Stage primaryStage): void
     }
 
     interface Serializer {
@@ -12,27 +13,37 @@ package ucf.assignments {
     }
 
     class InventoryJSONSerializer {
-
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
     }
 
     class InventoryHTMLSerializer {
-
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
     }
 
     class InventoryTSVSerializer {
-
+        + from(String items): Collection<? extends Item>
+        + to(Collection<? extends Item> items): String
     }
 
     class InventoryManagerModel {
+        - itemMap : ObservableMap<String,Item>
+        - itemList : ObservableList<Item>
+        - filteredItemList : FilteredList<Item>
+        - sortedItemList : SortedList<Item>
 
+        - dataAccessObject : InventoryDAO
     }
 
     class Item {
-
+        - name : String
+        - serialNumber : String
+        - value : BigDecimal
     }
 
     class InventoryManagerController {
-
+         # Event Handlers()
     }
 
     interface InventoryDAO {
@@ -46,13 +57,14 @@ package ucf.assignments {
         - path : Path
         - serializer : Serializer
 
-        + InventoryDAO(Path path): InventoryDAO
+        + InventoryFileDAO(Path path): InventoryDAO
+
+        + create(): void
+        + getItems(): Collection<? extends Item>
+        + saveItems(Collection<? extends Item> items): void
+        + delete(): void
 
         - determineFileExtension(Path path): <? extends Serializer>
-    }
-
-    class InventoryDatabaseTableDAO {
-
     }
 }
 
@@ -65,7 +77,6 @@ Serializer <|.. InventoryJSONSerializer
 Serializer <|.. InventoryHTMLSerializer
 Serializer <|.. InventoryTSVSerializer
 InventoryDAO <|.. InventoryFileDAO
-InventoryDAO <|. InventoryDatabaseTableDAO
 Item .. InventoryDAO
 
 @enduml
