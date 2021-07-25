@@ -13,6 +13,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -117,7 +118,7 @@ public class InventoryManagerModel {
     public void updateSerialNumber(String oldSerialNumber, String newSerialNumber) {
         Item item = itemMap.remove(oldSerialNumber);
         item.setSerialNumber(newSerialNumber);
-        itemMap.put(newSerialNumber, item);
+        addItem(item);
     }
 
     public Item getItemBySerialNumber(String serialNumber) {
@@ -135,5 +136,4 @@ public class InventoryManagerModel {
     public boolean isBound() {
         return dataAccessObject != null;
     }
-
 }
